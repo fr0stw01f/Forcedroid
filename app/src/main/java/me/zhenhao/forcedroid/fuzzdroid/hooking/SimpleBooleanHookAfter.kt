@@ -10,7 +10,7 @@ import me.zhenhao.forcedroid.fuzzdroid.networkconnection.NetworkConnectionInitia
  */
 class SimpleBooleanHookAfter(private val methodSignature: String) : AbstractMethodHookAfter() {
 
-    private var runtimeValueOfReturnAfterhooking: Any? = null
+    private var runtimeValueOfReturnAfterHooking: Any? = null
 
     private var runtimeValueOfReturnAvailable: Boolean = false
 
@@ -24,7 +24,7 @@ class SimpleBooleanHookAfter(private val methodSignature: String) : AbstractMeth
         if (response == null) {
             Log.e(SharedClassesSettings.TAG, "NULL response received from server")
             runtimeValueOfReturnAvailable = false
-            runtimeValueOfReturnAfterhooking = null
+            runtimeValueOfReturnAfterHooking = null
             return
         }
 
@@ -32,14 +32,14 @@ class SimpleBooleanHookAfter(private val methodSignature: String) : AbstractMeth
         runtimeValueOfReturnAvailable = response.doesResponseExist()
 
         if (runtimeValueOfReturnAvailable) {
-            runtimeValueOfReturnAfterhooking = response.returnValue
-            Log.d(SharedClassesSettings.TAG, "Return value from server: " + runtimeValueOfReturnAfterhooking!!)
+            runtimeValueOfReturnAfterHooking = response.returnValue
+            Log.d(SharedClassesSettings.TAG, "Return value from server: " + runtimeValueOfReturnAfterHooking!!)
         } else
             Log.d(SharedClassesSettings.TAG, "Server had no response value for us")
     }
 
     override fun getReturnValue(): Any? {
-        return runtimeValueOfReturnAfterhooking
+        return runtimeValueOfReturnAfterHooking
     }
 
     override fun isValueReplacementNecessary(): Boolean {

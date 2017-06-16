@@ -11,7 +11,7 @@ import me.zhenhao.forcedroid.fuzzdroid.util.UtilHook
  */
 class AnalysisDependentMethodHookAfter(private val methodSignature: String) : AbstractMethodHookAfter() {
 
-    private var runtimeValueOfReturnAfterhooking: Any? = null
+    private var runtimeValueOfReturnAfterHooking: Any? = null
 
     private var runtimeValueOfReturnAvailable: Boolean = false
 
@@ -30,7 +30,7 @@ class AnalysisDependentMethodHookAfter(private val methodSignature: String) : Ab
         if (response == null) {
             Log.e(SharedClassesSettings.TAG, "NULL response received from server")
             runtimeValueOfReturnAvailable = false
-            runtimeValueOfReturnAfterhooking = null
+            runtimeValueOfReturnAfterHooking = null
             return
         }
 
@@ -38,14 +38,14 @@ class AnalysisDependentMethodHookAfter(private val methodSignature: String) : Ab
         runtimeValueOfReturnAvailable = response.doesResponseExist()
 
         if (runtimeValueOfReturnAvailable) {
-            runtimeValueOfReturnAfterhooking = response.returnValue
-            Log.d(SharedClassesSettings.TAG, "Return value from server: " + runtimeValueOfReturnAfterhooking!!)
+            runtimeValueOfReturnAfterHooking = response.returnValue
+            Log.d(SharedClassesSettings.TAG, "Return value from server: " + runtimeValueOfReturnAfterHooking!!)
         } else
             Log.d(SharedClassesSettings.TAG, "Server had no response value for us")
     }
 
     override fun getReturnValue(): Any? {
-        return runtimeValueOfReturnAfterhooking
+        return runtimeValueOfReturnAfterHooking
     }
 
     override fun isValueReplacementNecessary(): Boolean {
