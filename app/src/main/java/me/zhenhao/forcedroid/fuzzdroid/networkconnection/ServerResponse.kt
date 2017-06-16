@@ -35,9 +35,9 @@ class ServerResponse : Serializable, Cloneable {
             if (returnValue != null)
                 response += returnValue
             else {
-                if (paramValues != null) {
-                    for (pair in paramValues!!)
-                        response += String.format("\n\t param %d = %s", pair.first, pair.second)
+                if (!paramValues.isEmpty()) {
+                    for ((first, second) in paramValues)
+                        response += String.format("\n\t param %d = %s", first, second)
                 } else
                     throw RuntimeException("the response has to contain either a value for the parameter or return value")
             }
@@ -49,7 +49,7 @@ class ServerResponse : Serializable, Cloneable {
     override fun hashCode(): Int {
         val prime = 31
         var result = 1
-        result = prime * result + if (paramValues == null) 0 else paramValues!!.hashCode()
+        result = prime * result + if (paramValues.isEmpty()) 0 else paramValues.hashCode()
         result = prime * result + if (responseExist) 1231 else 1237
         result = prime * result + if (returnValue == null) 0 else returnValue!!.hashCode()
         return result
@@ -62,11 +62,11 @@ class ServerResponse : Serializable, Cloneable {
             return false
         if (javaClass != obj.javaClass)
             return false
-        val other = obj as ServerResponse?
-        if (paramValues == null) {
-            if (other!!.paramValues != null)
+        val other = obj as ServerResponse
+        if (paramValues.isEmpty()) {
+            if (!other.paramValues.isEmpty())
                 return false
-        } else if (paramValues != other!!.paramValues)
+        } else if (paramValues != other.paramValues)
             return false
         if (responseExist != other.responseExist)
             return false
@@ -84,7 +84,6 @@ class ServerResponse : Serializable, Cloneable {
 
     companion object {
         private val serialVersionUID = 5488569934511264853L
-
 
         fun getEmptyResponse(): ServerResponse {
             val response = ServerResponse()

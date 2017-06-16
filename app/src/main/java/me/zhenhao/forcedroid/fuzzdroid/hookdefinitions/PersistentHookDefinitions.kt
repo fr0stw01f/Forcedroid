@@ -1,9 +1,9 @@
 package me.zhenhao.forcedroid.fuzzdroid.hookdefinitions
 
 import android.net.NetworkInfo.DetailedState
-import me.zhenhao.forcedroid.fuzzdroid.hooking.FieldHookInfo
-import me.zhenhao.forcedroid.fuzzdroid.hooking.HookInfo
-import me.zhenhao.forcedroid.fuzzdroid.hooking.MethodHookInfo
+import de.robv.android.xposed.XC_MethodHook
+import me.zhenhao.forcedroid.fuzzdroid.hooking.*
+import java.util.*
 
 /**
  * Created by tom on 6/8/17.
@@ -12,20 +12,20 @@ class PersistentHookDefinitions : Hook {
 
     override fun initializeHooks(): Set<HookInfo> {
         val allPersistentHooks = HashSet<HookInfo>()
-        //		allPersistentHooks.addAll(emulatorCheckHooks());
-        //		allPersistentHooks.addAll(networkRelatedHooks());
+        allPersistentHooks.addAll(emulatorCheckHooks())
+        allPersistentHooks.addAll(networkRelatedHooks())
         return allPersistentHooks
     }
 
 
     private fun emulatorCheckHooks(): Set<HookInfo> {
-        val emulatorHoocks = HashSet<HookInfo>()
+        val emulatorHooks = HashSet<HookInfo>()
 
-        emulatorHoocks.addAll(buildSpecificEmulatorCheckHooks())
-        emulatorHoocks.addAll(telephonyManagerSpecificEmulatorCheckHooks())
-        emulatorHoocks.addAll(applicationPackageManagerEmulatorCheckHooks())
+        emulatorHooks.addAll(buildSpecificEmulatorCheckHooks())
+        emulatorHooks.addAll(telephonyManagerSpecificEmulatorCheckHooks())
+        emulatorHooks.addAll(applicationPackageManagerEmulatorCheckHooks())
 
-        return emulatorHoocks
+        return emulatorHooks
     }
 
 
@@ -90,8 +90,8 @@ class PersistentHookDefinitions : Hook {
     private fun telephonyManagerSpecificEmulatorCheckHooks(): Set<HookInfo> {
         val telephonyManagerSpecificEmulatorCheckHooks = HashSet<HookInfo>()
 
-        //		 MethodHookInfo deviceId = new MethodHookInfo("<android.telephony.TelephonyManager: java.lang.String getDeviceId()>");
-        //		 deviceId.persistentHookAfter("353918056991322");
+        val deviceId = MethodHookInfo("<android.telephony.TelephonyManager: java.lang.String getDeviceId()>")
+        deviceId.persistentHookAfter("353918056991322")
         val line1Number = MethodHookInfo("<android.telephony.TelephonyManager: java.lang.String getLine1Number()>")
         line1Number.persistentHookAfter("")
         val simSerial = MethodHookInfo("<android.telephony.TelephonyManager: java.lang.String getSimSerialNumber()>")
@@ -111,8 +111,7 @@ class PersistentHookDefinitions : Hook {
         val networkType = MethodHookInfo("<android.telephony.TelephonyManager: java.lang.String getNetworkType()>")
         phoneType.persistentHookAfter("1")
 
-
-        //		 telephonyManagerSpecificEmulatorCheckHooks.add(deviceId);
+        telephonyManagerSpecificEmulatorCheckHooks.add(deviceId)
         telephonyManagerSpecificEmulatorCheckHooks.add(line1Number)
         telephonyManagerSpecificEmulatorCheckHooks.add(simSerial)
         telephonyManagerSpecificEmulatorCheckHooks.add(softwareVersion)
@@ -140,35 +139,31 @@ class PersistentHookDefinitions : Hook {
 
 
     // TIMING BOMBS are covered by a bytecode tranformer (TimingBombTransformer)
-    //
-    //	private Set<HookInfo> timingBombHooks() {
-    //		Set<HookInfo> timingBombHooks = new HashSet<HookInfo>();
-    //
-    //		MethodHookInfo setRepeating = new MethodHookInfo("<android.app.AlarmManager: void set(int,long,android.app.PendingIntent)>");
-    //		Pair<Integer, Object> paramTime = new Pair<Integer, Object>(1, 2000L);
-    //		setRepeating.persistentHookBefore(Collections.singleton(paramTime));
-    //
-    //		//yes, this is not a conditional hook, but it belongs to the cat timingbombs
-    //		MethodHookInfo hPostDelayed = new MethodHookInfo("<android.os.Handler: boolean postDelayed(java.lang.Runnable,long)>");
-    //		Set<ParameterConditionValueInfo> parameterInfos1 = new HashSet<ParameterConditionValueInfo>();
-    //		ParameterConditionValueInfo arg1 = new ParameterConditionValueInfo(1, new Condition() {
-    //			@Override
-    //			public boolean isConditionSatisfied(MethodHookParam param) {
-    //
-    //				if(!param.args[0].toString().startsWith("de.tu_darmstadt.sse.additionalappclasses.tracing")) {
-    //					return true;
-    //				}
-    //				return false;
-    //			}
-    //		}, 2000L);
-    //		parameterInfos1.add(arg1);
-    //		hPostDelayed.conditionDependentHookBefore(parameterInfos1);
-    //
-    //
-    ////		timingBombHooks.add(setRepeating);
-    //		timingBombHooks.add(hPostDelayed);
-    //		return timingBombHooks;
-    //	}
+    private fun timingBombHooks(): Set<HookInfo> {
+        val timingBombHooks = HashSet<HookInfo>()
+
+        val setRepeating = MethodHookInfo("<android.app.AlarmManager: void set(int,long,android.app.PendingIntent)>")
+        val paramTime = Pair<Int, Any>(1, 2000L)
+
+        setRepeating.persistentHookBefore(Collections.singleton(paramTime))
+
+        //yes, this is not a conditional hook, but it belongs to the cat timingbombs
+        val hPostDelayed = MethodHookInfo("<android.os.Handler: boolean postDelayed(java.lang.Runnable,long)>")
+        val parameterInfo0 = HashSet<ParameterConditionValueInfo>()
+        val arg1 = ParameterConditionValueInfo(1, object : Condition {
+            override fun isConditionSatisfied(param: XC_MethodHook.MethodHookParam): Boolean {
+                if(!param.args[0].toString().startsWith("me.zhenhao.forcedroid.fuzzdroid.tracing"))
+                    return true
+                return false
+            }
+        }, 2000L)
+        parameterInfo0.add(arg1)
+        hPostDelayed.conditionDependentHookBefore(parameterInfo0)
+
+		timingBombHooks.add(setRepeating)
+        timingBombHooks.add(hPostDelayed)
+        return timingBombHooks
+    }
 
 
     private fun networkRelatedHooks(): Set<HookInfo> {

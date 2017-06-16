@@ -15,7 +15,6 @@ class AnalysisDependentMethodHookAfter(private val methodSignature: String) : Ab
 
     private var runtimeValueOfReturnAvailable: Boolean = false
 
-
     fun retrieveValueFromServer(runtimeValue: Any) {
         // Make sure to always flush the trace before we ask for a decision
         //		BytecodeLogger.dumpTracingDataSynchronous();
@@ -45,11 +44,9 @@ class AnalysisDependentMethodHookAfter(private val methodSignature: String) : Ab
             Log.d(SharedClassesSettings.TAG, "Server had no response value for us")
     }
 
-
     override fun getReturnValue(): Any? {
         return runtimeValueOfReturnAfterhooking
     }
-
 
     override fun isValueReplacementNecessary(): Boolean {
         return runtimeValueOfReturnAvailable

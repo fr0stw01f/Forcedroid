@@ -13,7 +13,6 @@ import java.io.IOException
  */
 class DexFileExtractorHookBefore(private val methodSignature: String, val argumentPosition: Int) : AbstractMethodHookBefore() {
 
-
     fun sendDexFileToServer(dexFilePath: String) {
         val dexFile = File(dexFilePath)
         val dexFileBytes = convertFileToByteArray(dexFile)

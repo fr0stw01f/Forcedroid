@@ -13,9 +13,7 @@ class CrashReportItem : TraceItem {
     var exceptionMessage: String? = null
         private set
 
-
     private constructor() : super()
-
 
     constructor(exceptionMessage: String, lastExecutedStatement: Int) : super(lastExecutedStatement) {
         this.exceptionMessage = exceptionMessage
@@ -32,7 +30,6 @@ class CrashReportItem : TraceItem {
     }
 
     companion object {
-
 
         private val serialVersionUID = 5787737805848107595L
 

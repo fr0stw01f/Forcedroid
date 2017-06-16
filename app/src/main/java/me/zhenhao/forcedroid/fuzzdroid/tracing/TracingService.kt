@@ -80,8 +80,7 @@ class TracingService : Service() {
     }
 
     private fun startDumper() {
-        val thread = HandlerThread("ServiceDumpTraceQueue",
-                THREAD_PRIORITY_BACKGROUND)
+        val thread = HandlerThread("ServiceDumpTraceQueue", THREAD_PRIORITY_BACKGROUND)
         thread.start()
         handlerDumpQueue = HandlerDumpQueue(thread.looper)
     }
@@ -100,7 +99,6 @@ class TracingService : Service() {
     }
 
     internal inner class TracingServiceBinder : Binder() {
-
 
         fun getService(): ITracingServiceInterface {
             return object : ITracingServiceInterface {

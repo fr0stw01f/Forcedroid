@@ -81,7 +81,7 @@ object UtilHook {
             }
 
         }
-        throw RuntimeException("incorrect param-typ")
+        throw RuntimeException("incorrect param-type")
     }
 
     private fun countMatch(string: String, findStr: String): Int {
@@ -98,16 +98,16 @@ object UtilHook {
     }
 
     fun initAllHookers(): Set<HookInfo> {
-        val allHookInfos = HashSet<HookInfo>()
+        val allHookInfo = HashSet<HookInfo>()
 
-//        allHookInfos.addAll(AnalysisDependentHookDefinitions().initializeHooks())
-//        allHookInfos.addAll(DexFileExtractorHookDefinitions().initializeHooks())
-//        allHookInfos.addAll(SimpleBooleanReturnDefinitions().initializeHooks())
-//        allHookInfos.addAll(ConditionalHookDefinitions().initializeHooks())
-//        allHookInfos.addAll(PersistentHookDefinitions().initializeHooks())
+//        allHookInfo.addAll(AnalysisDependentHookDefinitions().initializeHooks())
+//        allHookInfo.addAll(DexFileExtractorHookDefinitions().initializeHooks())
+//        allHookInfo.addAll(SimpleBooleanReturnDefinitions().initializeHooks())
+//        allHookInfo.addAll(ConditionalHookDefinitions().initializeHooks())
+//        allHookInfo.addAll(PersistentHookDefinitions().initializeHooks())
 
-        allHookInfos.addAll(KrepHookDefinitions().initializeHooks())
+        allHookInfo.addAll(KrepHookDefinitions().initializeHooks())
 
-        return allHookInfos
+        return allHookInfo
     }
 }

@@ -9,7 +9,6 @@ class PersistentMethodHookBefore(private val paramValuePair: Set<Pair<Int, Any>>
         return paramValuePair
     }
 
-
     override fun isValueReplacementNecessary(): Boolean {
         return true
     }

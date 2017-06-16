@@ -31,7 +31,7 @@ class DecisionRequest : IClientRequest, Cloneable {
         val sb = StringBuilder()
         sb.append(String.format("[HOOK]%s\n", this.loggingPointSignature))
         sb.append(String.format("\t codeposition=%d\n", this.codePosition))
-        sb.append(String.format("\t hookAfter=%s\n", if (this.isHookAfter == true) "true" else "false"))
+        sb.append(String.format("\t hookAfter=%s\n", if (this.isHookAfter) "true" else "false"))
         if (isHookAfter)
             sb.append(String.format("\t runtime value of return value: %s\n", this.runtimeValueOfReturn))
         else {

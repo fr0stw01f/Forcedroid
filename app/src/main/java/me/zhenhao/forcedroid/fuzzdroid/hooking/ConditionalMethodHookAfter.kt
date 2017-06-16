@@ -10,16 +10,13 @@ class ConditionalMethodHookAfter(private val condition: Condition, private val r
 
     private var valueReplacementNecessary: Boolean = false
 
-
     fun testConditionSatisfaction(originalMethodInfo: MethodHookParam) {
         valueReplacementNecessary = condition.isConditionSatisfied(originalMethodInfo)
     }
 
-
     override fun getReturnValue(): Any? {
         return returnValue
     }
-
 
     override fun isValueReplacementNecessary(): Boolean {
         return valueReplacementNecessary

@@ -11,19 +11,21 @@ class AnalysisDependentHookDefinitions : Hook {
 
     override fun initializeHooks(): Set<HookInfo> {
         val allAnalysisDependentHooks = HashSet<HookInfo>()
+
         allAnalysisDependentHooks.addAll(telephonyManagerHooks())
-        //		allAnalysisDependentHooks.addAll(stringOperationHooks());
-        //		allAnalysisDependentHooks.addAll(applicationInfoHooks());
+        allAnalysisDependentHooks.addAll(stringOperationHooks())
+        allAnalysisDependentHooks.addAll(applicationInfoHooks())
         allAnalysisDependentHooks.addAll(smsMessageHooks())
         allAnalysisDependentHooks.addAll(sharedPreferencesHooks())
-        //		allAnalysisDependentHooks.addAll(networkRelatedHooks());
+        allAnalysisDependentHooks.addAll(networkRelatedHooks())
         allAnalysisDependentHooks.addAll(integrityRelatedHooks())
         allAnalysisDependentHooks.addAll(fileRelatedHooks())
         allAnalysisDependentHooks.addAll(reflectionHooks())
         allAnalysisDependentHooks.addAll(deviceAdminHooks())
-        //		allAnalysisDependentHooks.addAll(intentBasedHooks());
+        allAnalysisDependentHooks.addAll(intentBasedHooks())
         allAnalysisDependentHooks.addAll(xmlBasedHooks())
         allAnalysisDependentHooks.addAll(foregroundActivityCheckHooks())
+
         return allAnalysisDependentHooks
     }
 
@@ -230,69 +232,69 @@ class AnalysisDependentHookDefinitions : Hook {
         val valueOf9 = MethodHookInfo("<java.lang.String: java.lang.String valueOf(char)>")
         valueOf9.analysisDependentHookAfter()
 
-        //		stringOpHoocks.add(charAt);
-        //		stringOpHoocks.add(codePointAt);
-        //		stringOpHoocks.add(codePointBefore);
-        //		stringOpHoocks.add(codePointCount);
-        //		stringOpHoocks.add(compareTo);
-        //		stringOpHoocks.add(compareToIgnoreCase);
-        //		stringOpHoocks.add(concat);
-        //		stringOpHoocks.add(containsCharSequence);
-        //		stringOpHoocks.add(contentEqualsCharSequence);
-        //		stringOpHoocks.add(contentEqualsStringBuffer);
-        //		stringOpHoocks.add(copyValueOf1);
-        //		stringOpHoocks.add(copyValueOf2);
-        //		stringOpHoocks.add(endsWith);
-        //		stringOpHoocks.add(equals);
-        //		stringOpHoocks.add(equalsIgnoreCase);
-        //		stringOpHoocks.add(format1);
-        //		stringOpHoocks.add(format2);
-        //		stringOpHoocks.add(getBytes1);
-        //		stringOpHoocks.add(getBytes2);
-        //		stringOpHoocks.add(getBytes3);
-        //		stringOpHoocks.add(getBytes4);
-        //		stringOpHoocks.add(getChars);
-        //		stringOpHoocks.add(hashCode);
-        //		stringOpHoocks.add(indexOf1);
-        //		stringOpHoocks.add(indexOf2);
-        //		stringOpHoocks.add(indexOf3);
-        //		stringOpHoocks.add(indexOf4);
-        //		stringOpHoocks.add(intern);
-        //		stringOpHoocks.add(isEmpty);
-        //		stringOpHoocks.add(lastIndexOf1);
-        //		stringOpHoocks.add(lastIndexOf2);
-        //		stringOpHoocks.add(lastIndexOf3);
-        //		stringOpHoocks.add(lastIndexOf4);
-        //		stringOpHoocks.add(length);
-        //		stringOpHoocks.add(matches);
-        //		stringOpHoocks.add(offsetByCodePoints);
-        //		stringOpHoocks.add(regionMatches1);
-        //		stringOpHoocks.add(regionMatches2);
-        //		stringOpHoocks.add(replace1);
-        //		stringOpHoocks.add(replace2);
-        //		stringOpHoocks.add(split1);
-        //		stringOpHoocks.add(split2);
-        //		stringOpHoocks.add(startsWith1);
-        //		stringOpHoocks.add(startsWith2);
-        //		stringOpHoocks.add(subSequence);
-        //		stringOpHoocks.add(substring1);
-        //		stringOpHoocks.add(substring2);
-        //		stringOpHoocks.add(toCharArray);
-        //		stringOpHoocks.add(toLowerCase1);
-        //		stringOpHoocks.add(toLowerCase2);
-        //		stringOpHoocks.add(toString);
-        //		stringOpHoocks.add(toUpperCase1);
-        //		stringOpHoocks.add(toUpperCase2);
-        //		stringOpHoocks.add(trim);
-        //		stringOpHoocks.add(valueOf1);
-        //		stringOpHoocks.add(valueOf2);
-        //		stringOpHoocks.add(valueOf3);
-        //		stringOpHoocks.add(valueOf4);
-        //		stringOpHoocks.add(valueOf5);
-        //		stringOpHoocks.add(valueOf6);
-        //		stringOpHoocks.add(valueOf7);
-        //		stringOpHoocks.add(valueOf8);
-        //		stringOpHoocks.add(valueOf9);
+//        stringOpHoocks.add(charAt)
+//        stringOpHoocks.add(codePointAt)
+//        stringOpHoocks.add(codePointBefore)
+//        stringOpHoocks.add(codePointCount)
+//        stringOpHoocks.add(compareTo)
+//        stringOpHoocks.add(compareToIgnoreCase)
+//        stringOpHoocks.add(concat)
+//        stringOpHoocks.add(containsCharSequence)
+//        stringOpHoocks.add(contentEqualsCharSequence)
+//        stringOpHoocks.add(contentEqualsStringBuffer)
+//        stringOpHoocks.add(copyValueOf1)
+//        stringOpHoocks.add(copyValueOf2)
+//        stringOpHoocks.add(endsWith)
+//        stringOpHoocks.add(equals)
+//        stringOpHoocks.add(equalsIgnoreCase)
+//        stringOpHoocks.add(format1)
+//        stringOpHoocks.add(format2)
+//        stringOpHoocks.add(getBytes1)
+//        stringOpHoocks.add(getBytes2)
+//        stringOpHoocks.add(getBytes3)
+//        stringOpHoocks.add(getBytes4)
+//        stringOpHoocks.add(getChars)
+//        stringOpHoocks.add(hashCode)
+//        stringOpHoocks.add(indexOf1)
+//        stringOpHoocks.add(indexOf2)
+//        stringOpHoocks.add(indexOf3)
+//        stringOpHoocks.add(indexOf4)
+//        stringOpHoocks.add(intern)
+//        stringOpHoocks.add(isEmpty)
+//        stringOpHoocks.add(lastIndexOf1)
+//        stringOpHoocks.add(lastIndexOf2)
+//        stringOpHoocks.add(lastIndexOf3)
+//        stringOpHoocks.add(lastIndexOf4)
+//        stringOpHoocks.add(length)
+//        stringOpHoocks.add(matches)
+//        stringOpHoocks.add(offsetByCodePoints)
+//        stringOpHoocks.add(regionMatches1)
+//        stringOpHoocks.add(regionMatches2)
+//        stringOpHoocks.add(replace1)
+//        stringOpHoocks.add(replace2)
+//        stringOpHoocks.add(split1)
+//        stringOpHoocks.add(split2)
+//        stringOpHoocks.add(startsWith1)
+//        stringOpHoocks.add(startsWith2)
+//        stringOpHoocks.add(subSequence)
+//        stringOpHoocks.add(substring1)
+//        stringOpHoocks.add(substring2)
+//        stringOpHoocks.add(toCharArray)
+//        stringOpHoocks.add(toLowerCase1)
+//        stringOpHoocks.add(toLowerCase2)
+//        stringOpHoocks.add(toString)
+//        stringOpHoocks.add(toUpperCase1)
+//        stringOpHoocks.add(toUpperCase2)
+//        stringOpHoocks.add(trim)
+//        stringOpHoocks.add(valueOf1)
+//        stringOpHoocks.add(valueOf2)
+//        stringOpHoocks.add(valueOf3)
+//        stringOpHoocks.add(valueOf4)
+//        stringOpHoocks.add(valueOf5)
+//        stringOpHoocks.add(valueOf6)
+//        stringOpHoocks.add(valueOf7)
+//        stringOpHoocks.add(valueOf8)
+//        stringOpHoocks.add(valueOf9)
 
 
         return stringOpHoocks
@@ -380,8 +382,8 @@ class AnalysisDependentHookDefinitions : Hook {
         val getInputStream = MethodHookInfo("<com.android.okhttp.internal.http.HttpURLConnectionImpl: java.io.InputStream getInputStream()>")
         getInputStream.analysisDependentHookAfter()
 
-        //		networkHooks.add(getByName);
-        //		networkHooks.add(getHostAddress);
+        //networkHooks.add(getByName);
+        //networkHooks.add(getHostAddress);
         networkHooks.add(urlConstructor)
         networkHooks.add(getResponseCode)
         networkHooks.add(getInputStream)

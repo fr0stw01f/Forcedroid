@@ -13,6 +13,5 @@ abstract class AbstractFieldHookAfter {
 
     abstract fun isValueReplacementNecessary(): Boolean
 
-
     abstract fun getNewValue(): Any?
 }

@@ -14,7 +14,6 @@ import me.zhenhao.forcedroid.fuzzdroid.dynamiccfg.MethodLeaveItem
 import me.zhenhao.forcedroid.fuzzdroid.dynamiccfg.MethodReturnItem
 import me.zhenhao.forcedroid.fuzzdroid.hooking.Hooker
 import me.zhenhao.forcedroid.fuzzdroid.networkconnection.ServerCommunicator
-import me.zhenhao.forcedroid.fuzzdroid.tracing.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -53,9 +52,9 @@ object BytecodeLogger {
 
     }
 
-
     fun initialize(context: Context) {
         // Start the service in its own thread to avoid an ANR
+        Log.d(SharedClassesSettings.TAG_SKT, "Starting to initialize tracing service in context ${context.packageName}")
         if (tracingService == null) {
             val initThread = object : Thread() {
 
@@ -63,7 +62,7 @@ object BytecodeLogger {
                     if (tracingService == null) {
                         Log.i(SharedClassesSettings.TAG, "Binding to tracing service...")
                         val serviceIntent = Intent(context, TracingService::class.java)
-                        serviceIntent.action = TracingService.Companion.ACTION_NULL
+                        serviceIntent.action = TracingService.ACTION_NULL
                         context.startService(serviceIntent)
                         if (context.bindService(serviceIntent, tracingConnection, Context.BIND_AUTO_CREATE))
                             Log.i(SharedClassesSettings.TAG, "Tracing service bound.")
@@ -85,20 +84,16 @@ object BytecodeLogger {
 
     }
 
-
     private var globalLastExecutedStatement: Int = 0
-
 
     fun setLastExecutedStatement(statementID: Int) {
         lastExecutedStatement.set(statementID)
         globalLastExecutedStatement = statementID
     }
 
-
     fun getLastExecutedStatement(): Int {
         return lastExecutedStatement.get()
     }
-
 
     private fun getAppContext(): Context {
         if (Hooker.applicationContext != null) {
@@ -122,25 +117,21 @@ object BytecodeLogger {
 
     }
 
-
     @JvmOverloads fun reportConditionOutcome(decision: Boolean, context: Context = getAppContext()) {
         val serviceIntent = Intent(context, TracingService::class.java)
-        serviceIntent.action = TracingService.Companion.ACTION_ENQUEUE_TRACE_ITEM
-        serviceIntent.putExtra(TracingService.Companion.EXTRA_ITEM_TYPE,
-                TracingService.Companion.ITEM_TYPE_PATH_TRACKING)
-        serviceIntent.putExtra(TracingService.Companion.EXTRA_TRACE_ITEM, PathTrackingTraceItem(getLastExecutedStatement(), decision) as Parcelable)
+        serviceIntent.action = TracingService.ACTION_ENQUEUE_TRACE_ITEM
+        serviceIntent.putExtra(TracingService.EXTRA_ITEM_TYPE,
+                TracingService.ITEM_TYPE_PATH_TRACKING)
+        serviceIntent.putExtra(TracingService.EXTRA_TRACE_ITEM, PathTrackingTraceItem(getLastExecutedStatement(), decision) as Parcelable)
         context.startService(serviceIntent)
     }
-
 
     @JvmOverloads fun reportConditionOutcomeSynchronous(decision: Boolean,
                                                         context: Context = getAppContext()) {
         // Create the trace item to be enqueued
-        val traceItem = PathTrackingTraceItem(
-                getLastExecutedStatement(), decision)
+        val traceItem = PathTrackingTraceItem(getLastExecutedStatement(), decision)
         sendTraceItemSynchronous(context, traceItem)
     }
-
 
     private fun flushBootupQueue() {
         if (tracingService == null || bootupQueue.isEmpty())
@@ -159,15 +150,13 @@ object BytecodeLogger {
         }
     }
 
-
     @JvmOverloads fun dumpTracingData(context: Context = getAppContext()) {
         Log.i(SharedClassesSettings.TAG, "Sending an intent to dump tracing data...")
         val serviceIntent = Intent(context, TracingService::class.java)
-        serviceIntent.action = TracingService.Companion.ACTION_DUMP_QUEUE
+        serviceIntent.action = TracingService.ACTION_DUMP_QUEUE
         context.startService(serviceIntent)
         Log.i(SharedClassesSettings.TAG, "Tracing data dumped via intent")
     }
-
 
     @JvmOverloads fun dumpTracingDataSynchronous(context: Context = getAppContext()) {
         // If we don't have a service connection yet, we must directly send the
@@ -199,26 +188,21 @@ object BytecodeLogger {
 
     }
 
-
     @JvmOverloads fun reportMethodCallSynchronous(codePosition: Int, context: Context = getAppContext()) {
         sendTraceItemSynchronous(context, MethodCallItem(codePosition))
     }
-
 
     @JvmOverloads fun reportMethodReturnSynchronous(codePosition: Int, context: Context = getAppContext()) {
         sendTraceItemSynchronous(context, MethodReturnItem(codePosition))
     }
 
-
     @JvmOverloads fun reportMethodEnterSynchronous(codePosition: Int, context: Context = getAppContext()) {
         sendTraceItemSynchronous(context, MethodEnterItem(codePosition))
     }
 
-
     @JvmOverloads fun reportMethodLeaveSynchronous(codePosition: Int, context: Context = getAppContext()) {
         sendTraceItemSynchronous(context, MethodLeaveItem(codePosition))
     }
-
 
     @JvmOverloads fun reportTargetReachedSynchronous(context: Context = getAppContext()) {
         Log.i(SharedClassesSettings.TAG, "Target location has been reached.")
@@ -230,7 +214,6 @@ object BytecodeLogger {
         // data out
         dumpTracingDataSynchronous(context)
     }
-
 
     @JvmOverloads fun sendDexFileToServer(dexFileName: String, dexFile: ByteArray, context: Context = getAppContext()) {
         // Since dex files can be large and we need to make sure that they are
@@ -259,7 +242,6 @@ object BytecodeLogger {
                 // ignore it, we can't really do much about it
                 Log.e(SharedClassesSettings.TAG, "Could not write serialized trace item to disk: " + e.message)
             }
-
         } finally {
             if (oos != null)
                 try {
@@ -276,15 +258,12 @@ object BytecodeLogger {
                     // ignore it, there's little we can do
                     Log.e(SharedClassesSettings.TAG, "Could not close file stream")
                 }
-
         }
     }
-
 
     fun reportDynamicValue(dynamicValue: String, paramIdx: Int) {
         reportDynamicValue(getAppContext(), dynamicValue, paramIdx)
     }
-
 
     fun reportDynamicValue(context: Context, dynamicValue: String?,
                            paramIdx: Int) {
@@ -294,11 +273,9 @@ object BytecodeLogger {
         }
     }
 
-
     fun reportDynamicValue(dynamicValue: Int, paramIdx: Int) {
         reportDynamicValue(getAppContext(), dynamicValue, paramIdx)
     }
-
 
     fun reportDynamicValue(context: Context, dynamicValue: Int,
                            paramIdx: Int) {
@@ -306,16 +283,13 @@ object BytecodeLogger {
                 dynamicValue, paramIdx, getLastExecutedStatement()))
     }
 
-
     fun reportTimingBomb(originalValue: Long, newValue: Long) {
         reportTimingBomb(getAppContext(), originalValue, newValue)
     }
 
-
     fun reportTimingBomb(context: Context, originalValue: Long, newValue: Long) {
         sendTraceItemSynchronous(context, TimingBombTraceItem(originalValue, newValue))
     }
-
 
     fun sendTraceItemSynchronous(context: Context,
                                  traceItem: TraceItem) {
@@ -331,7 +305,7 @@ object BytecodeLogger {
         }
 
         try {
-            tracingService!!.enqueueTraceItem(traceItem)
+            tracingService?.enqueueTraceItem(traceItem)
         } catch (ex: RuntimeException) {
             Log.e(SharedClassesSettings.TAG, "Binder communication failed: " + ex.message)
         }

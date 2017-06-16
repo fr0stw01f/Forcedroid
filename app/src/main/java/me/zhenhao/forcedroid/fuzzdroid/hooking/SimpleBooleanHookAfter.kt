@@ -19,7 +19,7 @@ class SimpleBooleanHookAfter(private val methodSignature: String) : AbstractMeth
         val lastCodePosition = getLastCodePosition()
         val cRequest = DecisionRequest(lastCodePosition, methodSignature, true)
 
-        val response = sc!!.getResultForRequest(cRequest)
+        val response = sc.getResultForRequest(cRequest)
 
         if (response == null) {
             Log.e(SharedClassesSettings.TAG, "NULL response received from server")
@@ -29,7 +29,7 @@ class SimpleBooleanHookAfter(private val methodSignature: String) : AbstractMeth
         }
 
         Log.i(SharedClassesSettings.TAG, "Retrieved boolean decision from server")
-        runtimeValueOfReturnAvailable = response!!.doesResponseExist()
+        runtimeValueOfReturnAvailable = response.doesResponseExist()
 
         if (runtimeValueOfReturnAvailable) {
             runtimeValueOfReturnAfterhooking = response.returnValue

@@ -13,7 +13,6 @@ import java.util.*
 object CrashReporter {
 
     private val uch = object : Thread.UncaughtExceptionHandler {
-
         private val communicator = ServerCommunicator(this)
 
         override fun uncaughtException(arg0: Thread, arg1: Throwable) {
@@ -22,9 +21,9 @@ object CrashReporter {
             if (arg1.cause != null)
                 Log.i(SharedClassesSettings.TAG, "Cause: " + arg1.cause.toString())
             if (arg1.cause!!.cause != null)
-                Log.i(SharedClassesSettings.TAG, "Cause 2: " + arg1!!.cause!!.cause.toString())
+                Log.i(SharedClassesSettings.TAG, "Cause 2: " + arg1.cause!!.cause.toString())
             if (arg1.cause!!.cause!!.cause != null)
-                Log.i(SharedClassesSettings.TAG, "Cause 3: " + arg1!!.cause!!.cause!!.cause.toString())
+                Log.i(SharedClassesSettings.TAG, "Cause 3: " + arg1.cause!!.cause!!.cause.toString())
 
             // Make sure that we flush the trace items before we die
             BytecodeLogger.dumpTracingDataSynchronous()
@@ -34,7 +33,6 @@ object CrashReporter {
                     BytecodeLogger.getLastExecutedStatement())
             communicator.send(Collections.singleton(ci), true)
         }
-
     }
 
     fun registerExceptionHandler() {

@@ -79,43 +79,43 @@ class MethodHookInfo(private val methodSignature: String): HookInfo {
     }
 
 
-    public fun persistentHookBefore(pairs: Set<Pair<Int, Any>>) {
+    fun persistentHookBefore(pairs: Set<Pair<Int, Any>>) {
         beforeHooks.add(PersistentMethodHookBefore(pairs))
     }
 
-    public fun analysisDependentHookBefore() {
+    fun analysisDependentHookBefore() {
         beforeHooks.add(AnalysisDependentMethodHookBefore(methodSignature))
     }
 
-    public fun conditionDependentHookBefore(paramConditions: Set<ParameterConditionValueInfo>) {
+    fun conditionDependentHookBefore(paramConditions: Set<ParameterConditionValueInfo>) {
         beforeHooks.add(ConditionalMethodHookBefore(paramConditions))
     }
 
-    public fun persistentHookAfter(returnValue: Any) {
+    fun persistentHookAfter(returnValue: Any) {
         afterHooks.add(PersistentMethodHookAfter(returnValue))
     }
 
-    public fun analysisDependentHookAfter() {
+    fun analysisDependentHookAfter() {
         afterHooks.add(AnalysisDependentMethodHookAfter(this.methodSignature));
     }
 
-    public fun dexFileExtractorHookBefore(argumentPosition: Int) {
+    fun dexFileExtractorHookBefore(argumentPosition: Int) {
         beforeHooks.add(DexFileExtractorHookBefore(methodSignature, argumentPosition))
     }
 
-    public fun simpleBooleanHookAfter() {
+    fun simpleBooleanHookAfter() {
         afterHooks.add(SimpleBooleanHookAfter(methodSignature))
     }
 
-    public fun conditionDependentHookAfter(condition: Condition, returnValue: Any) {
+    fun conditionDependentHookAfter(condition: Condition, returnValue: Any) {
         afterHooks.add(ConditionalMethodHookAfter(condition, returnValue))
     }
 
-    public fun hasHookBefore(): Boolean {
+    fun hasHookBefore(): Boolean {
         return !beforeHooks.isEmpty()
     }
 
-    public fun hasHookAfter(): Boolean {
+    fun hasHookAfter(): Boolean {
         return !afterHooks.isEmpty()
     }
 

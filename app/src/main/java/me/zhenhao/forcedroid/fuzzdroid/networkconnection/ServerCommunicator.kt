@@ -37,6 +37,7 @@ class ServerCommunicator(private val syncToken: Any) {
 
     fun send(request: Collection<IClientRequest>,
              waitForResponse: Boolean) {
+        Log.d(SharedClassesSettings.TAG_SKT, "Sending requests...")
         val thread = Thread(Runnable {
             // No need to send empty requests
             if (request.isEmpty())
@@ -47,6 +48,7 @@ class ServerCommunicator(private val syncToken: Any) {
             val ois: ObjectInputStream?
             try {
                 try {
+                    Log.d(SharedClassesSettings.TAG_SKT, "Sending requests in runnable...")
                     socket = Socket(NetworkSettings.SERVER_IP, NetworkSettings.SERVERPORT_OBJECT_TRANSFER)
                     if (!socket.isConnected) {
                         socket.close()
@@ -126,7 +128,6 @@ class ServerCommunicator(private val syncToken: Any) {
 
     }
 
-
     private inner class ClientThread(private val syncToken: Object, private val request: IClientRequest?) : Runnable {
 
         override fun run() {
@@ -137,6 +138,7 @@ class ServerCommunicator(private val syncToken: Any) {
             val ois: ObjectInputStream?
             try {
                 try {
+                    Log.d(SharedClassesSettings.TAG_SKT, "ClientThread running...")
                     socket = Socket(NetworkSettings.SERVER_IP, NetworkSettings.SERVERPORT_OBJECT_TRANSFER)
                     if (!socket.isConnected) {
                         socket.close()
@@ -201,7 +203,6 @@ class ServerCommunicator(private val syncToken: Any) {
         private fun sendRequest(out: ObjectOutputStream) {
             out.writeObject(request)
         }
-
 
         @Throws(ClassNotFoundException::class, IOException::class)
         private fun getResponse(input: ObjectInputStream): ServerResponse {

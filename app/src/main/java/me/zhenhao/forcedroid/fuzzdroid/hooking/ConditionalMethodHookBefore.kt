@@ -2,6 +2,7 @@ package me.zhenhao.forcedroid.fuzzdroid.hooking
 
 import android.util.Log
 import de.robv.android.xposed.XC_MethodHook.MethodHookParam
+import me.zhenhao.forcedroid.fuzzdroid.SharedClassesSettings
 
 
 /**
@@ -13,9 +14,8 @@ class ConditionalMethodHookBefore(private val paramConditions: Set<ParameterCond
 
     private val newParamObjectPairs = HashSet<Pair<Int, Any>>()
 
-
     fun testConditionSatisfaction(originalMethodInfo: MethodHookParam) {
-        Log.i("HOK", "Testing condition satisfaction...")
+        Log.d(SharedClassesSettings.TAG_HOK, "Testing condition satisfaction...")
         for (paramConditionValuePair in paramConditions) {
             val paramCondition = paramConditionValuePair.condition
             if (paramCondition.isConditionSatisfied(originalMethodInfo)) {

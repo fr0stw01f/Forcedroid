@@ -11,7 +11,6 @@ abstract class AbstractMethodHook {
         return BytecodeLogger.getLastExecutedStatement()
     }
 
-
     abstract fun isValueReplacementNecessary(): Boolean
 
 }

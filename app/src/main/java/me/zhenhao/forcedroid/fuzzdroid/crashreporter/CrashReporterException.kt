@@ -12,7 +12,6 @@ class CrashReporterException : Exception {
         stackTrace = originalException.stackTrace
     }
 
-
     internal constructor(message: String, className: String,
                          stackTrace: Array<StackTraceElement>) : super(message) {
         this.originalClassName = className

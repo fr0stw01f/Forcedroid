@@ -1,7 +1,9 @@
 package me.zhenhao.forcedroid.view
 
 
+import android.content.Context
 import android.preference.*
+import me.zhenhao.forcedroid.fuzzdroid.tracing.BytecodeLogger
 
 /**
  * A [PreferenceActivity] that presents a set of application settings. On
@@ -19,6 +21,10 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         setupActionBar()
+
+        context = applicationContext
+        if (context != null)
+            BytecodeLogger.initialize(context!!)
     }
 
     /**
@@ -33,7 +39,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
      * {@inheritDoc}
      */
     override fun onIsMultiPane(): Boolean {
-        return me.zhenhao.forcedroid.view.SettingsActivity.Companion.isXLargeTablet(this)
+        return me.zhenhao.forcedroid.view.SettingsActivity.isXLargeTablet(this)
     }
 
     /**
@@ -70,8 +76,8 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            me.zhenhao.forcedroid.view.SettingsActivity.Companion.bindPreferenceSummaryToValue(findPreference("example_text"))
-            me.zhenhao.forcedroid.view.SettingsActivity.Companion.bindPreferenceSummaryToValue(findPreference("example_list"))
+            me.zhenhao.forcedroid.view.SettingsActivity.bindPreferenceSummaryToValue(findPreference("example_text"))
+            me.zhenhao.forcedroid.view.SettingsActivity.bindPreferenceSummaryToValue(findPreference("example_list"))
         }
 
         override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
@@ -99,7 +105,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            me.zhenhao.forcedroid.view.SettingsActivity.Companion.bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"))
+            me.zhenhao.forcedroid.view.SettingsActivity.bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"))
         }
 
         override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
@@ -127,7 +133,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            me.zhenhao.forcedroid.view.SettingsActivity.Companion.bindPreferenceSummaryToValue(findPreference("sync_frequency"))
+            me.zhenhao.forcedroid.view.SettingsActivity.bindPreferenceSummaryToValue(findPreference("sync_frequency"))
         }
 
         override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
@@ -141,6 +147,8 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     }
 
     companion object {
+        var context: Context? = null
+
         /**
          * A preference value change listener that updates the preference's summary
          * to reflect its new value.
@@ -210,14 +218,15 @@ class SettingsActivity : AppCompatPreferenceActivity() {
          */
         private fun bindPreferenceSummaryToValue(preference: android.preference.Preference) {
             // Set the listener to watch for value changes.
-            preference.onPreferenceChangeListener = me.zhenhao.forcedroid.view.SettingsActivity.Companion.sBindPreferenceSummaryToValueListener
+            preference.onPreferenceChangeListener = me.zhenhao.forcedroid.view.SettingsActivity.sBindPreferenceSummaryToValueListener
 
             // Trigger the listener immediately with the preference's
             // current value.
-            me.zhenhao.forcedroid.view.SettingsActivity.Companion.sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+            me.zhenhao.forcedroid.view.SettingsActivity.sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
                     android.preference.PreferenceManager
                             .getDefaultSharedPreferences(preference.context)
                             .getString(preference.key, ""))
         }
     }
+
 }

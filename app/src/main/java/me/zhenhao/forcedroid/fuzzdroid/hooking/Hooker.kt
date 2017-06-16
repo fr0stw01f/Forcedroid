@@ -30,31 +30,33 @@ object Hooker {
     lateinit var applicationContext: Context
     lateinit var loadPackageParam: LoadPackageParam
 
-    fun initAndHook(context: Context, param: LoadPackageParam) {
-        applicationContext = context
+    fun initAndHook(param: LoadPackageParam) {
         loadPackageParam = param
         NetworkConnectionInitiator.initNetworkConnection()
-        //BytecodeLogger.initialize(context)
-        //Log.i("SSE", "Initialize bytecodelogger...")
         doHooking(UtilHook.initAllHookers())
-        Log.i("SSE", "Hooking ready...")
+        Log.i(SharedClassesSettings.TAG, "Hooks ready...")
+    }
+
+    fun initAndHook(context: Context, param: LoadPackageParam) {
+        applicationContext = context
+        initAndHook(param)
     }
 
     fun doHooking(infos: Set<HookInfo>) {
-        Log.i("SSE", "Preparing to do hooking...")
-        Log.i("HOK", "Size " + infos.size.toString())
+        Log.d(SharedClassesSettings.TAG_HOK, "Preparing to do hooking...")
+        Log.d(SharedClassesSettings.TAG_HOK, "Size " + infos.size.toString())
         for (info in infos) {
-            Log.i("HOKINF", info.toString())
+            Log.d(SharedClassesSettings.TAG_HOK, info.toString())
             if (info is MethodHookInfo)
                 doMethodHooking(info)
             else if (info is FieldHookInfo)
                 doFieldHooking(info)
         }
-        Log.i("SSE", "hooking done!")
+        Log.d(SharedClassesSettings.TAG_HOK, "Hooking done!")
     }
 
     private fun doMethodHooking(info: MethodHookInfo) {
-        Log.d("HOK", "beforehooks size ${info.beforeHooks.size}")
+        Log.d(SharedClassesSettings.TAG_HOK, "beforehooks size ${info.beforeHooks.size}")
         val callback = object : XC_MethodHook() {
 
             @Throws(Throwable::class)
@@ -63,7 +65,7 @@ object Hooker {
                 if (info.hasHookBefore()) {
                     val orderedBeforeHooks = info.beforeHooks
                     for (singleBeforeHook in orderedBeforeHooks) {
-                        Log.d("HOK", singleBeforeHook.toString())
+                        Log.d(SharedClassesSettings.TAG_HOK, singleBeforeHook.toString())
 
                         var hookingType: String? = null
                         // adding the runtime values of the params before hook
@@ -71,7 +73,7 @@ object Hooker {
                             hookingType = "AnalysisDependentMethodHookBefore"
                             singleBeforeHook.retrieveValueFromServer(param.args)
                         } else if (singleBeforeHook is ConditionalMethodHookBefore) {
-                            Log.i("MTDHOK", "in ConditionalMethodHookBefore")
+                            Log.d(SharedClassesSettings.TAG_HOK, "in ConditionalMethodHookBefore")
                             hookingType = "ConditionalMethodHookBefore"
                             singleBeforeHook.testConditionSatisfaction(param)
                         } else if (singleBeforeHook is DexFileExtractorHookBefore) {
@@ -89,12 +91,12 @@ object Hooker {
                             Log.i(SharedClassesSettings.TAG, String.format("[HOOK] %s || MethodSign: %s || Replace: %s", hookingType, param.method.toString(), singleBeforeHook.getParamValuesToReplace()))
 
                             // change only those params that are required
-                            for (paramValuePair in singleBeforeHook.getParamValuesToReplace()) {
+                            for ((first, second) in singleBeforeHook.getParamValuesToReplace()) {
                                 //special handling for file fuzzing:
-                                if (paramValuePair.second is FileFuzzingSerializableObject)
-                                    doFileFuzzingIfNecessary(param, paramValuePair.first, paramValuePair.second as FileFuzzingSerializableObject)
+                                if (second is FileFuzzingSerializableObject)
+                                    doFileFuzzingIfNecessary(param, first, second)
                                 else
-                                    param.args[paramValuePair.first] = paramValuePair.second
+                                    param.args[first] = second
                             }
                             return
                         }
@@ -129,7 +131,7 @@ object Hooker {
                             val returnValue = singleAfterHook.getReturnValue()
                             if (returnValue is SignatureSerializableObject) {
                                 Log.i(SharedClassesSettings.TAG, "TEST: SignatureSerializableObject")
-                                val sso = returnValue as SignatureSerializableObject
+                                val sso = returnValue
                                 if (param.result is PackageInfo) {
                                     Log.i(SharedClassesSettings.TAG, "TEST: PackageInfo")
                                     val pm = param.result as PackageInfo
@@ -163,10 +165,10 @@ object Hooker {
                     methodOrConstructor = cls.getDeclaredMethod(info.methodName, *tmp)
             }
         } catch (e: Exception) {
-            Log.i("HOKEXC", e.toString())
+            Log.d(SharedClassesSettings.TAG_EXC, e.toString())
             e.printStackTrace()
         }
-        Log.i("HOK", "Xposed hook " + methodOrConstructor)
+        Log.d(SharedClassesSettings.TAG_HOK, "Xposed hook ready for " + methodOrConstructor)
         if (methodOrConstructor != null)
             hookMethod(methodOrConstructor, callback)
     }
@@ -203,14 +205,14 @@ object Hooker {
 
     }
 
-    private fun doFileFuzzingIfNecessary(param: MethodHookParam, index: Int, fuzzyingObject: FileFuzzingSerializableObject) {
+    private fun doFileFuzzingIfNecessary(param: MethodHookParam, index: Int, fuzzingObject: FileFuzzingSerializableObject) {
         //file is in private dir and only the file name is necessary
-        if (fuzzyingObject.storageMode === 0)
-            doPrivateDirFileFuzzing(param, index, fuzzyingObject)
-        else if (fuzzyingObject.storageMode === 1)
-            doFileFuzzingBasedOnFileObject(param, fuzzyingObject)
-        else if (fuzzyingObject.storageMode === 2)
-            doFileFuzzingBasedOnAbsoluteStringPath(param, index, fuzzyingObject)//absolute path of file is given
+        if (fuzzingObject.storageMode == 0)
+            doPrivateDirFileFuzzing(param, index, fuzzingObject)
+        else if (fuzzingObject.storageMode == 1)
+            doFileFuzzingBasedOnFileObject(param, fuzzingObject)
+        else if (fuzzingObject.storageMode == 2)
+            doFileFuzzingBasedOnAbsoluteStringPath(param, index, fuzzingObject)//absolute path of file is given
         //there is a file object available
     }
 
@@ -247,7 +249,7 @@ object Hooker {
         }
 
         //there is nothing to do
-        if (file == null || file!!.exists())
+        if (file == null || file.exists())
             return
 
         //second copy corresponding file to file path

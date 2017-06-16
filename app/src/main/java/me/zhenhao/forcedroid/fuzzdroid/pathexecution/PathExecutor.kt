@@ -16,18 +16,16 @@ object PathExecutor {
         Log.i(SharedClassesSettings.TAG, String.format("%s || CodePos: %d || Method-Sign: %s || method access", SharedClassesSettings.METHOD_CALLEE_LABEL, codePosition, methodSignature))
     }
 
-
     @JvmOverloads fun logInfoAboutReturnStatement(methodSignature: String, returnValue: Any) {
         val codePosition = BytecodeLogger.getLastExecutedStatement().toLong()
         Log.i(SharedClassesSettings.TAG, String.format("%s || CodePos: %d || Method-Sign: %s || return %s", SharedClassesSettings.RETURN_LABEL, codePosition, methodSignature, concreteParameterValue(returnValue)))
     }
 
-
     fun logInfoAboutNonApiMethodCaller(methodSignature: String, invokeExprMethodSignature: String, vararg parameter: Any) {
         val codePosition = BytecodeLogger.getLastExecutedStatement().toLong()
         var invokeExprInfo = invokeExprMethodSignature + "("
 
-        if (parameter != null) {
+        if (!parameter.isEmpty()) {
             for (i in parameter.indices) {
                 if (i < parameter.size - 1) {
                     if (parameter[i] != null)

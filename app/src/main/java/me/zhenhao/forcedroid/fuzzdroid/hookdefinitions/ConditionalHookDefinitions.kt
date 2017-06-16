@@ -17,11 +17,11 @@ class ConditionalHookDefinitions : Hook {
 
     override fun initializeHooks(): Set<HookInfo> {
         val allConditionalHooks = HashSet<HookInfo>()
-        //		allConditionalHooks.addAll(fileSpecificEmulatorChecks());
-        //		allConditionalHooks.addAll(systemPropEmulatorChecks());
-        //		allConditionalHooks.addAll(appSpecificEmulatorChecks());
+        allConditionalHooks.addAll(fileSpecificEmulatorChecks())
+        allConditionalHooks.addAll(systemPropEmulatorChecks())
+        allConditionalHooks.addAll(appSpecificEmulatorChecks())
         allConditionalHooks.addAll(textMessageCrashPrevention())
-        //		allConditionalHooks.addAll(reflectionHooks());
+        allConditionalHooks.addAll(reflectionHooks())
         return allConditionalHooks
     }
 
@@ -449,7 +449,7 @@ class ConditionalHookDefinitions : Hook {
                 }
                 return false
             }
-        }, "de.tu_darmstadt.sse.additionalappclasses.reflections.DummyReflectionClass")
+        }, "me.zhenhao.forcedroid.fuzzdroid.reflections.DummyReflectionClass")
         parameterInfos.add(arg0)
         dexClassLoaderLoadClass.conditionDependentHookBefore(parameterInfos)
         reflectionHooks.add(dexClassLoaderLoadClass)
